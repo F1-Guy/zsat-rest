@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.Identity.Client;
 using System.ComponentModel.DataAnnotations;
 
 namespace zsat.Models
@@ -16,6 +17,7 @@ namespace zsat.Models
 
         [StringLength(30)]
         public string? Course { get; set; }
+
 
         public ICollection<Attendance>? Attendances { get; set; }
     }
