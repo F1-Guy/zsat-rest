@@ -1,17 +1,18 @@
-﻿using zsat.Models;
+﻿using zsat.Interfaces;
+using zsat.Models;
 
 namespace zsat.Managers
 {
-    public class AttendancesManager
+    public class AttendanceManager : IAttendance
     {
         private readonly ZsatDbContext _context;
 
-        public AttendancesManager(ZsatDbContext context)
+        public AttendanceManager(ZsatDbContext context)
         {
             _context = context;
         }
 
-        public async Task RegisterAttendance(string userId, DateTime timestamp)
+        public async Task<Attendance> RegisterAttendance(string userId, DateTime timestamp)
         {
             Attendance attendance = new Attendance();
             attendance.AppUserId = userId;
@@ -19,6 +20,7 @@ namespace zsat.Managers
             attendance.LessonId = 1;
             _context.Attendances.Add(attendance);
             await _context.SaveChangesAsync();
+            return attendance;
         }
     }
 }

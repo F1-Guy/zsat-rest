@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using zsat.Interfaces;
 using zsat.Managers;
 using zsat.Migrations;
 using zsat.Models;
@@ -11,6 +12,13 @@ namespace zsat.Controllers
     [ApiController]
     public class AttendancesController : ControllerBase
     {
+        private readonly IAttendance _manager;
+
+        public AttendancesController(IAttendance manager)
+        {
+            _manager = manager;
+        }
+
         // GET: api/<AttendancesController>
         [HttpGet]
         public IEnumerable<string> Get()
@@ -26,23 +34,23 @@ namespace zsat.Controllers
         }
 
         // POST api/<AttendancesController>
-        //[HttpPost]
-        //[ProducesResponseType(StatusCodes.Status200OK)]
-        //[ProducesResponseType(StatusCodes.Status400BadRequest)]
-        //public ActionResult<Attendance> Post(string userId, DateTime timestamp)
-        //{
-        //    if (userId == null || timestamp == null) return BadRequest();
-        //    try
-        //    {
-        //        _manager.RegisterAttendance(userId, timestamp);
-        //        return Ok();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return BadRequest(ex.Message);
-        //    }
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult<Attendance> Post(string userId, DateTime timestamp)
+        {
+            if (userId == null || timestamp == null) return BadRequest();
+            try
+            {
+                var attendace = _manager.RegisterAttendance(userId, timestamp).Result;
+                return Created($"/api/Attendances/{attendace.Id}", attendace);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
 
-        //}
+        }
 
         // PUT api/<AttendancesController>/5
         [HttpPut("{id}")]
