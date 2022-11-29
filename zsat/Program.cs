@@ -5,9 +5,6 @@ using zsat.Models;
 using Azure.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
-
-var keyVaultEndpoint = new Uri(Environment.GetEnvironmentVariable("VaultUri"));
-builder.Configuration.AddAzureKeyVault(keyVaultEndpoint, new DefaultAzureCredential());
 var config = builder.Configuration;
 
 // Add services to the container.
