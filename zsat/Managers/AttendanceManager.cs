@@ -12,10 +12,10 @@ namespace zsat.Managers
             _context = context;
         }
 
-        public async Task<Attendance> RegisterAttendance(string userId, DateTime timestamp)
+        public async Task<Attendance> RegisterAttendance(string cardId, DateTime timestamp)
         {
             Attendance attendance = new Attendance();
-            attendance.AppUserId = userId;
+            attendance.CardUserId = cardId;
             attendance.Timestamp = timestamp;
             attendance.LessonId = 1;
             _context.Attendances.Add(attendance);

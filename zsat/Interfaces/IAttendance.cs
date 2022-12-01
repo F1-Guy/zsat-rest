@@ -4,6 +4,6 @@ namespace zsat.Interfaces
 {
     public interface IAttendance
     {
-        public Task<Attendance> RegisterAttendance(string userId, DateTime timestamp);
+        public Task<Attendance> RegisterAttendance(string cardId, DateTime timestamp);
     }
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using zsat.Models;
 
@@ -11,9 +12,10 @@ using zsat.Models;
 namespace zsat.Migrations
 {
     [DbContext(typeof(ZsatDbContext))]
-    partial class ZsatDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221201133044_drinkkark")]
+    partial class drinkkark
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -241,7 +243,11 @@ namespace zsat.Migrations
                     b.Property<string>("AppUserId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("CardUserId")
+                    b.Property<string>("CardId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CardUserCardId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
@@ -255,7 +261,7 @@ namespace zsat.Migrations
 
                     b.HasIndex("AppUserId");
 
-                    b.HasIndex("CardUserId");
+                    b.HasIndex("CardUserCardId");
 
                     b.HasIndex("LessonId");
 
@@ -355,7 +361,7 @@ namespace zsat.Migrations
 
                     b.HasOne("zsat.Models.CardUser", "CardUser")
                         .WithMany()
-                        .HasForeignKey("CardUserId")
+                        .HasForeignKey("CardUserCardId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

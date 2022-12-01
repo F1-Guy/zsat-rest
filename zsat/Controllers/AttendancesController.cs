@@ -37,12 +37,12 @@ namespace zsat.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<Attendance> Post(string userId, DateTime timestamp)
+        public ActionResult<Attendance> Post(string cardId, DateTime timestamp)
         {
-            if (userId == null || timestamp == null) return BadRequest();
+            if (cardId == null) return BadRequest();
             try
             {
-                var attendace = _manager.RegisterAttendance(userId, timestamp).Result;
+                var attendace = _manager.RegisterAttendance(cardId, timestamp).Result;
                 return Created($"/api/Attendances/{attendace.Id}", attendace);
             }
             catch (Exception ex)

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using zsat.Models;
 
@@ -11,9 +12,10 @@ using zsat.Models;
 namespace zsat.Migrations
 {
     [DbContext(typeof(ZsatDbContext))]
-    partial class ZsatDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221201132515_last")]
+    partial class last
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -239,9 +241,6 @@ namespace zsat.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("AppUserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("CardUserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
@@ -254,8 +253,6 @@ namespace zsat.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AppUserId");
-
-                    b.HasIndex("CardUserId");
 
                     b.HasIndex("LessonId");
 
@@ -349,13 +346,9 @@ namespace zsat.Migrations
 
             modelBuilder.Entity("zsat.Models.Attendance", b =>
                 {
-                    b.HasOne("zsat.Models.AppUser", null)
+                    b.HasOne("zsat.Models.AppUser", "AppUser")
                         .WithMany("Attendances")
-                        .HasForeignKey("AppUserId");
-
-                    b.HasOne("zsat.Models.CardUser", "CardUser")
-                        .WithMany()
-                        .HasForeignKey("CardUserId")
+                        .HasForeignKey("AppUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -365,7 +358,7 @@ namespace zsat.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("CardUser");
+                    b.Navigation("AppUser");
 
                     b.Navigation("Lesson");
                 });
