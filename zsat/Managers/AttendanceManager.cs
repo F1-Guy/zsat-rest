@@ -12,6 +12,11 @@ namespace zsat.Managers
             _context = context;
         }
 
+        public async Task<List<Attendance>> GetAllAttendances()
+        {
+            return _context.Attendances.ToList();
+        }
+
         public async Task<Attendance> RegisterAttendance(string cardId, DateTime timestamp)
         {
             Attendance attendance = new Attendance();
