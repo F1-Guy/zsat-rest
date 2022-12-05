@@ -6,8 +6,10 @@ namespace zsat.Models
     {
         [Key]
         public string CardId { get; set; }
+
         [Required]
         public string AppUserId { get; set; }
+
         public AppUser AppUser { get; set; }
     }
 }

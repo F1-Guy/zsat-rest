@@ -259,7 +259,7 @@ namespace zsat.Migrations
 
                     b.HasIndex("LessonId");
 
-                    b.ToTable("Attendances", (string)null);
+                    b.ToTable("Attendances");
                 });
 
             modelBuilder.Entity("zsat.Models.CardUser", b =>
@@ -275,7 +275,7 @@ namespace zsat.Migrations
 
                     b.HasIndex("AppUserId");
 
-                    b.ToTable("CardUsers", (string)null);
+                    b.ToTable("CardUsers");
                 });
 
             modelBuilder.Entity("zsat.Models.Lesson", b =>
@@ -293,7 +293,7 @@ namespace zsat.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Lessons", (string)null);
+                    b.ToTable("Lessons");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

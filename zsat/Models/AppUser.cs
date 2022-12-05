@@ -18,7 +18,6 @@ namespace zsat.Models
         [StringLength(30)]
         public string? Course { get; set; }
 
-
         public ICollection<Attendance>? Attendances { get; set; }
     }
 }

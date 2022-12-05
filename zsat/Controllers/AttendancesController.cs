@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using zsat.Interfaces;
 using zsat.Managers;
-using zsat.Migrations;
 using zsat.Models;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860

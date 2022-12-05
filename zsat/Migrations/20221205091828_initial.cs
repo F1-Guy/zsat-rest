@@ -170,6 +170,24 @@ namespace zsat.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CardUsers",
+                columns: table => new
+                {
+                    CardId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    AppUserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CardUsers", x => x.CardId);
+                    table.ForeignKey(
+                        name: "FK_CardUsers_AspNetUsers_AppUserId",
+                        column: x => x.AppUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Attendances",
                 columns: table => new
                 {
@@ -177,7 +195,8 @@ namespace zsat.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LessonId = table.Column<int>(type: "int", nullable: false),
-                    AppUserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    CardUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    AppUserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -186,7 +205,12 @@ namespace zsat.Migrations
                         name: "FK_Attendances_AspNetUsers_AppUserId",
                         column: x => x.AppUserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Attendances_CardUsers_CardUserId",
+                        column: x => x.CardUserId,
+                        principalTable: "CardUsers",
+                        principalColumn: "CardId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Attendances_Lessons_LessonId",
@@ -241,9 +265,19 @@ namespace zsat.Migrations
                 column: "AppUserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Attendances_CardUserId",
+                table: "Attendances",
+                column: "CardUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Attendances_LessonId",
                 table: "Attendances",
                 column: "LessonId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CardUsers_AppUserId",
+                table: "CardUsers",
+                column: "AppUserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -270,10 +304,13 @@ namespace zsat.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "CardUsers");
 
             migrationBuilder.DropTable(
                 name: "Lessons");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
         }
     }
 }
