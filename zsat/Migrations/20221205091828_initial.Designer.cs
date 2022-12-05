@@ -12,7 +12,7 @@ using zsat.Models;
 namespace zsat.Migrations
 {
     [DbContext(typeof(ZsatDbContext))]
-    [Migration("20221129083006_initial")]
+    [Migration("20221205091828_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -241,6 +241,9 @@ namespace zsat.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("AppUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("CardUserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
@@ -254,9 +257,27 @@ namespace zsat.Migrations
 
                     b.HasIndex("AppUserId");
 
+                    b.HasIndex("CardUserId");
+
                     b.HasIndex("LessonId");
 
                     b.ToTable("Attendances");
+                });
+
+            modelBuilder.Entity("zsat.Models.CardUser", b =>
+                {
+                    b.Property<string>("CardId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("AppUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("CardId");
+
+                    b.HasIndex("AppUserId");
+
+                    b.ToTable("CardUsers");
                 });
 
             modelBuilder.Entity("zsat.Models.Lesson", b =>
@@ -330,9 +351,13 @@ namespace zsat.Migrations
 
             modelBuilder.Entity("zsat.Models.Attendance", b =>
                 {
-                    b.HasOne("zsat.Models.AppUser", "AppUser")
+                    b.HasOne("zsat.Models.AppUser", null)
                         .WithMany("Attendances")
-                        .HasForeignKey("AppUserId")
+                        .HasForeignKey("AppUserId");
+
+                    b.HasOne("zsat.Models.CardUser", "CardUser")
+                        .WithMany()
+                        .HasForeignKey("CardUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -342,9 +367,20 @@ namespace zsat.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("AppUser");
+                    b.Navigation("CardUser");
 
                     b.Navigation("Lesson");
+                });
+
+            modelBuilder.Entity("zsat.Models.CardUser", b =>
+                {
+                    b.HasOne("zsat.Models.AppUser", "AppUser")
+                        .WithMany()
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppUser");
                 });
 
             modelBuilder.Entity("zsat.Models.AppUser", b =>

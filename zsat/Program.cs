@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using zsat.Models;
 using Azure.Identity;
+using zsat.Interfaces;
+using zsat.Managers;
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
@@ -16,6 +18,9 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<ZsatDbContext>(options => options.UseSqlServer(config.GetConnectionString("ZsatConnection")));
 builder.Services.AddIdentity<AppUser, IdentityRole>().AddEntityFrameworkStores<ZsatDbContext>();
+
+// DONT TOUCH IT WILL BLOW UP Interface is needed 100%
+builder.Services.AddScoped<IAttendance, AttendanceManager>();
 
 var app = builder.Build();
 

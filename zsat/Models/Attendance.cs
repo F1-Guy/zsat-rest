@@ -15,6 +15,9 @@ namespace zsat.Models
 
         public Lesson Lesson { get; set; }
 
-        public AppUser AppUser { get; set; }
+        [Required]
+        public string CardUserId { get; set; }
+
+        public CardUser CardUser { get; set; }
     }
 }

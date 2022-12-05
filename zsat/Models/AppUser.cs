@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.Identity.Client;
 using System.ComponentModel.DataAnnotations;
 
 namespace zsat.Models
