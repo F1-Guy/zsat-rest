@@ -18,11 +18,25 @@ namespace zsat.Controllers
         }
 
         // POST api/<AuthUsersController>
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [Route("[action]")]
         [HttpPost]
-        public ActionResult<AuthUser> Post(string userName, string password)
+        public ActionResult<AuthUser> SignUp(string userName, string password, string fullName)
         {
-            var user = _manager.SignUp(userName, password);
+            var user = _manager.SignUp(userName, password, fullName);
             return Created($"/api/AppUsers/{user.Id}", user);
+        }
+
+        // POST api/<AuthUsersController>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Route("[action]")]
+        [HttpPost]
+        public ActionResult<AuthUser> SignIn(string userName, string password)
+        {
+            var user = _manager.SignIn(userName, password);
+            if (user == null) return BadRequest("No such user found.");
+            return Ok(user);
         }
     }
 }
