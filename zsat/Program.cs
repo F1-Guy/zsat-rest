@@ -17,10 +17,20 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<ZsatDbContext>(options => options.UseSqlServer(config.GetConnectionString("ZsatConnection")));
-builder.Services.AddIdentity<AppUser, IdentityRole>().AddEntityFrameworkStores<ZsatDbContext>();
 
 // DONT TOUCH IT WILL BLOW UP Interface is needed 100%
 builder.Services.AddScoped<IAttendance, AttendanceManager>();
+builder.Services.AddScoped<IAuthUser, AuthUserManager>();
+
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.AllowAnyOrigin()
+        .AllowAnyHeader()
+        .AllowAnyMethod();
+    });
+});
 
 var app = builder.Build();
 
@@ -31,8 +41,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseCors();
 
 app.Run();
