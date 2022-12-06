@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.Identity.Client;
+using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.Contracts;
 
 namespace zsat.Models
 {
@@ -13,5 +15,9 @@ namespace zsat.Models
 
         [Required]
         public string Password { get; set; }
+
+        [Required]
+        [MaxLength(60)]
+        public string FullName { get; set; }
     }
 }

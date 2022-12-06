@@ -5,8 +5,7 @@
     },
     "mssql1": {
       "type": "mssql",
-      "connectionId": "ConnectionStrings:ZsatConnection",
-      "dynamicId": null
+      "connectionId": "ConnectionStrings:ZsatConnection"
     },
     "mssql2": {
       "type": "mssql",

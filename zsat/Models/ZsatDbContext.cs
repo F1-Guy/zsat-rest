@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace zsat.Models
 {
-    public class ZsatDbContext : IdentityDbContext<AppUser>
+    public class ZsatDbContext : DbContext
     {
         public ZsatDbContext()
         {
@@ -16,8 +16,7 @@ namespace zsat.Models
 
         }
 
-        public virtual DbSet<AppUser> AppUsers { get; set; }
-        public virtual DbSet<CardUser> CardUsers { get; set; }
+        public virtual DbSet<Student> Students { get; set; }
         public virtual DbSet<Lesson> Lessons { get; set; }
         public virtual DbSet<Attendance> Attendances { get; set; }
         public virtual DbSet<AuthUser> AuthUsers { get; set; }

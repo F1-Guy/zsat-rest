@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.Identity.Client;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace zsat.Models
 {
-    public class AppUser : IdentityUser
+    public class Student
     {
+        [Key]
+        public string CardId { get; set; }
+
         [Required]
         [StringLength(30)]
         public string Name { get; set; }
