@@ -8,54 +8,56 @@ using System.Threading.Tasks;
 using zsat.Models;
 using zsat.Interfaces;
 using NuGet.Packaging.Signing;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Data.SqlClient;
 
 namespace zsat.Managers.Tests
 {
     [TestClass]
     public class AttendanceManagerTests
     {
-        private readonly AttendanceManager _manager;
-        public AttendanceManagerTests() { }
-        public AttendanceManagerTests(AttendanceManager manager)
+        string _connectionString = "Data Source=tcp:zsatdb.database.windows.net,1433;Initial Catalog=zsattestdb;User Id=zsatadmin@zsatdb;Password=Zealand123$";
+        ZsatDbContext _context;
+        AttendanceManager _manager;
+
+        public AttendanceManagerTests()
         {
-            _manager = manager;
+            var options = new DbContextOptionsBuilder<ZsatDbContext>().UseSqlServer(_connectionString).Options;
+            _context = new ZsatDbContext(options);
+            _manager = new AttendanceManager(_context);
         }
 
-        [TestMethod()]
-        public void GetEmptyAttendancesTest()
+        List<Attendance> attendances = new List<Attendance>();
+
+        [TestInitialize]
+        public void Initialize()
         {
-            //arrange
-            _manager.RegisterAttendance("1", DateTime.Now);
-            List<Attendance> attendances = new List<Attendance>();
-            //act
+            SqlConnection conn = new SqlConnection(_connectionString);
+            SqlCommand cmd = new SqlCommand("DELETE * FROM Attendances", conn);
+
+        } 
+
+        [TestMethod]
+        public void GetEmptyAttendancesTest()
+        { 
             attendances = _manager.GetAllAttendances().Result;
-            //assert
-            Assert.AreEqual(1, attendances.Count);
+
+            Assert.AreEqual(0, attendances.Count);
         }
 
         [TestMethod]
         public void GetAllAttendancesTest()
         {
-            //arrange
-            List<Attendance> attendances = new List<Attendance>();
-            //act
+            string cardId = "1";
+            DateTime timestamp = DateTime.Now;
+
+            _manager.RegisterAttendance(cardId, timestamp);
+        
             attendances = _manager.GetAllAttendances().Result;
-            //assert
-            Assert.AreEqual(0, attendances.Count);        
+
+            Assert.AreEqual(1, attendances.Count);
         }
 
-        [TestMethod]
-        public void RegisterAttendanceTest()
-        {
-            //arrange
-            string cardId = "2";
-            DateTime timestamp = DateTime.Now;
-            //act
-            Attendance attendance = _manager.RegisterAttendance(cardId, timestamp).Result;
-            List<Attendance> attendances = _manager.GetAllAttendances().Result;
-            //assert
-            Assert.AreEqual(2, attendances.Count);
-        }
         [TestMethod]
         public void RegisterInvalidAttendanceTest()
         {
