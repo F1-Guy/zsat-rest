@@ -10,6 +10,7 @@ using zsat.Interfaces;
 using NuGet.Packaging.Signing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Data.SqlClient;
+using zsat.Controllers;
 
 namespace zsat.Managers.Tests
 {
@@ -32,36 +33,103 @@ namespace zsat.Managers.Tests
         [TestInitialize]
         public void Initialize()
         {
-            SqlConnection conn = new SqlConnection(_connectionString);
-            SqlCommand cmd = new SqlCommand("DELETE * FROM Attendances", conn);
+            attendances = _context.Attendances.ToList();
+            foreach (var item in attendances)
+            {
+                _context.Attendances.Remove(item);
+                _context.SaveChanges();
+            }
+        }
 
-        } 
-
+        //GetAllAttendances() 
         [TestMethod]
         public void GetEmptyAttendancesTest()
-        { 
-            attendances = _manager.GetAllAttendances().Result;
+        {
+            attendances = _manager.GetAllAttendances();
 
             Assert.AreEqual(0, attendances.Count);
         }
 
+        //RegisterAttendance
         [TestMethod]
-        public void GetAllAttendancesTest()
+        public void RegisterAttendanceTest()
         {
             string cardId = "1";
+            int lessonId = 1;
             DateTime timestamp = DateTime.Now;
 
-            _manager.RegisterAttendance(cardId, timestamp);
-        
-            attendances = _manager.GetAllAttendances().Result;
+            _manager.RegisterAttendance(cardId, timestamp, lessonId);
+
+            attendances = _manager.GetAllAttendances();
 
             Assert.AreEqual(1, attendances.Count);
         }
 
         [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
         public void RegisterInvalidAttendanceTest()
         {
-            Assert.Fail();
+            string cardId = null;
+            DateTime timestamp = DateTime.Now;
+            int lessonId = 0;
+
+            _manager.RegisterAttendance(cardId, timestamp, lessonId);
+        }
+
+        //DeleteAttendance
+        [TestMethod]
+        public void DeleteAttendanceTest()
+        {
+            Attendance att = _manager.RegisterAttendance("1", DateTime.Now, 1);
+            Attendance? toDelete = _context.Attendances.Where(a => a.Id == att.Id).FirstOrDefault();
+
+            List<Attendance> attendances = _manager.GetAllAttendances();
+            int expected = attendances.Count - 1;
+
+            _context.Attendances.Remove(toDelete);
+            _context.SaveChanges();
+
+            List<Attendance> attendancesAfter = _manager.GetAllAttendances();
+            int actual = attendancesAfter.Count;
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void DeleteInvalidIdTest()
+        {
+            int invalidId = 5;
+
+            _manager.DeleteAttendance(invalidId);
+        }
+
+        //FilterAttendance
+        [TestMethod]
+        public void FilterAttendanceByTime()
+        {
+            Attendance attendance = _manager.RegisterAttendance("1", DateTime.Now, 1);
+            DateTime outOfRange = new DateTime(2022, 10, 10);
+            _manager.RegisterAttendance("1", outOfRange , 1);
+
+            DateTime date = DateTime.Now;
+            DateTime startDate = new DateTime(date.Year, date.Month, 1);
+            DateTime endDate = new DateTime(date.Year, date.Month, 24);
+
+            List<Attendance> filteredList = _manager.FilterByTime(startDate, endDate);
+
+            Assert.AreEqual(filteredList.First(), attendance);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void FilterByInvalidTime()
+        {
+            DateTime date = DateTime.Now;
+            DateTime startDate = new DateTime(date.Year, date.Month, 31);
+            DateTime endDate = new DateTime(date.Year, date.Month, 24);
+
+            _manager.FilterByTime(startDate, endDate);
         }
     }
 }

@@ -20,28 +20,41 @@ namespace zsat.Controllers
 
         // GET: api/<AttendancesController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public ActionResult<IEnumerable<Attendance>> Get()
         {
-            return new string[] { "value1", "value2" };
+            List<Attendance> attendances = _manager.GetAllAttendances();
+            if (attendances == null)
+                return NoContent();
+            return attendances;
         }
 
         // GET api/<AttendancesController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult<Attendance> Get(int id)
         {
-            return "value";
+            try
+            {
+                return Ok(_manager.GetById(id));
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+           
         }
 
         // POST api/<AttendancesController>
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<Attendance> Post(string cardId, DateTime timestamp)
+        public ActionResult<Attendance> Post(string cardId, DateTime timestamp, int lessonId)
         {
-            if (cardId == null) return BadRequest();
             try
             {
-                var attendace = _manager.RegisterAttendance(cardId, timestamp).Result;
+                var attendace = _manager.RegisterAttendance(cardId, timestamp, lessonId);
                 return Created($"/api/Attendances/{attendace.Id}", attendace);
             }
             catch (Exception ex)
@@ -50,17 +63,38 @@ namespace zsat.Controllers
             }
 
         }
-
-        // PUT api/<AttendancesController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpGet]
+        [Route("[action]")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult<List<Attendance>> FilterByTime(DateTime startDate, DateTime endDate)
         {
+            try
+            {
+                List<Attendance> filtered = _manager.FilterByTime(startDate, endDate);
+                return Ok(filtered);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // DELETE api/<AttendancesController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult Delete(int id)
         {
+            try
+            {
+                Attendance toDelete = _manager.DeleteAttendance(id);
+                return Ok(toDelete);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }
