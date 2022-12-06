@@ -22,6 +22,17 @@ builder.Services.AddIdentity<AppUser, IdentityRole>().AddEntityFrameworkStores<Z
 // DONT TOUCH IT WILL BLOW UP Interface is needed 100%
 builder.Services.AddScoped<IAttendance, AttendanceManager>();
 builder.Services.AddScoped<IAppUser, AppUserManager>();
+builder.Services.AddScoped<IAuthUser, AuthUserManager>();
+
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.AllowAnyOrigin()
+        .AllowAnyHeader()
+        .AllowAnyMethod();
+    });
+});
 
 var app = builder.Build();
 
@@ -37,5 +48,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseCors();
 
 app.Run();

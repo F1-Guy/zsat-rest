@@ -20,5 +20,6 @@ namespace zsat.Models
         public virtual DbSet<CardUser> CardUsers { get; set; }
         public virtual DbSet<Lesson> Lessons { get; set; }
         public virtual DbSet<Attendance> Attendances { get; set; }
+        public virtual DbSet<AuthUser> AuthUsers { get; set; }
     }
 }
