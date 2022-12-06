@@ -1,4 +1,5 @@
-﻿using zsat.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using zsat.Interfaces;
 using zsat.Models;
 
 namespace zsat.Managers
@@ -14,11 +15,13 @@ namespace zsat.Managers
 
         public async Task<List<Attendance>> GetAllAttendances()
         {
-            return _context.Attendances.ToList();
+            return await _context.Attendances.ToListAsync();
         }
 
         public async Task<Attendance> RegisterAttendance(string cardId, DateTime timestamp)
         {
+            if (cardId == null) throw new ArgumentNullException(nameof(cardId));
+
             Attendance attendance = new Attendance();
             attendance.StudentCardId = cardId;
             attendance.Timestamp = timestamp;
