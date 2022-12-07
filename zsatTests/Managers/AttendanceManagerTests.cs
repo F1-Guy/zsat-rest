@@ -115,8 +115,9 @@ namespace zsat.Managers.Tests
             DateTime date = DateTime.Now;
             DateTime startDate = new DateTime(date.Year, date.Month, 1);
             DateTime endDate = new DateTime(date.Year, date.Month, 24);
+            int lessonId = 1;
 
-            List<Attendance> filteredList = _manager.FilterByTime(startDate, endDate);
+            List<Attendance> filteredList = _manager.Filter(startDate,lessonId, endDate);
 
             Assert.AreEqual(filteredList.First(), attendance);
         }
@@ -128,8 +129,19 @@ namespace zsat.Managers.Tests
             DateTime date = DateTime.Now;
             DateTime startDate = new DateTime(date.Year, date.Month, 31);
             DateTime endDate = new DateTime(date.Year, date.Month, 24);
+            int lessonId = 1;
 
-            _manager.FilterByTime(startDate, endDate);
+            _manager.Filter(startDate,lessonId, endDate);
+        }
+
+        [TestMethod]
+        public void FilterByInvalidLessonId()
+        {
+            int lessonId = 12345678;
+
+            List<Attendance> attendances = _manager.Filter(null, lessonId, null);
+
+            Assert.AreEqual(0, attendances.Count);
         }
     }
 }

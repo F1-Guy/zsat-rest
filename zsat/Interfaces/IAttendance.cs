@@ -8,6 +8,6 @@ namespace zsat.Interfaces
         public Attendance GetById(int id);
         public Attendance RegisterAttendance(string cardId, DateTime timestamp, int lessonId);
         public Attendance DeleteAttendance(int aId);
-        public List<Attendance> FilterByTime(DateTime startDate, DateTime? endDate);
+        public List<Attendance> Filter(DateTime? startDate, int? lessonId, DateTime? endDate);
     }
 }
