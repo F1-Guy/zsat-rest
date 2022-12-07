@@ -13,22 +13,65 @@ namespace zsat.Managers
             _context = context;
         }
 
-        public async Task<List<Attendance>> GetAllAttendances()
+        public List<Attendance> GetAllAttendances()
         {
             return await _context.Attendances.ToListAsync();
         }
 
-        public async Task<Attendance> RegisterAttendance(string cardId, DateTime timestamp)
+        public Attendance GetById(int id)
         {
-            if (cardId == null) throw new ArgumentNullException(nameof(cardId));
+            var attendance = _context.Attendances.FirstOrDefault();
+
+            if (attendance == null) throw new ArgumentException();
+
+            return attendance;
+        }
+
+        public Attendance RegisterAttendance(string cardId, DateTime timestamp, int lessonId)
+        {
+            if ((cardId == null) || (lessonId == 0))
+            {
+                throw new ArgumentException();
+            }
 
             Attendance attendance = new Attendance();
             attendance.StudentCardId = cardId;
             attendance.Timestamp = timestamp;
-            attendance.LessonId = 1;
+            attendance.LessonId = lessonId;
             _context.Attendances.Add(attendance);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
             return attendance;
         }
+
+        public Attendance DeleteAttendance (int aId)
+        {
+            Attendance attendance = GetById(aId);
+            if (attendance == null) throw new ArgumentException();
+
+            _context.Attendances.Remove(attendance);
+            _context.SaveChanges();
+            return attendance;
+        }
+
+        public List<Attendance> FilterByTime(DateTime startDate, DateTime? endDate)
+        {
+            List<Attendance> filteredAttendance = new List<Attendance>();
+
+            if (endDate == null) endDate = DateTime.Now;
+
+            DateTime minStartDate = new DateTime(2022, 09, 01);
+
+            if (startDate > endDate || startDate < minStartDate) throw new ArgumentException();
+
+            foreach(var item in _context.Attendances.ToList())
+            {
+                if(item.Timestamp > startDate && item.Timestamp < endDate)
+                {
+                    filteredAttendance.Add(item);
+                }
+            }
+            return filteredAttendance;
+        }
+
     }
 }
