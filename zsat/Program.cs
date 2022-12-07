@@ -21,6 +21,7 @@ builder.Services.AddDbContext<ZsatDbContext>(options => options.UseSqlServer(con
 // DONT TOUCH IT WILL BLOW UP Interface is needed 100%
 builder.Services.AddScoped<IAttendance, AttendanceManager>();
 builder.Services.AddScoped<IAuthUser, AuthUserManager>();
+builder.Services.AddScoped<IStudent, StudentManager>();
 
 builder.Services.AddCors(options =>
 {

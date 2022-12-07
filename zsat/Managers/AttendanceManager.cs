@@ -15,7 +15,7 @@ namespace zsat.Managers
 
         public List<Attendance> GetAllAttendances()
         {
-            return _context.Attendances.ToList();
+            return await _context.Attendances.ToListAsync();
         }
 
         public Attendance GetById(int id)

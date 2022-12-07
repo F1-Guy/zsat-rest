@@ -36,7 +36,7 @@ namespace zsat.Managers
 
             AuthUser? foundUser = _context.AuthUsers.Where(u => u.UserName == userName).FirstOrDefault();
             if (foundUser != null && foundUser.Password == hashedPassword) return foundUser;
-            return null;
+            throw new ArgumentOutOfRangeException(nameof(userName));
         }
 
         public AuthUser SignUp(string userName, string password, string fullName)
@@ -56,6 +56,8 @@ namespace zsat.Managers
                     .Replace("-", String.Empty);
                 hashedPassword = hash;
             }
+
+            if (userName == null || password == null || fullName == null) throw new ArgumentNullException();
 
             AuthUser user = new() { UserName = userName, Password = hashedPassword, FullName = fullName };
             _context.Add(user);
