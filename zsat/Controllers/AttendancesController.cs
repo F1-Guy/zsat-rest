@@ -67,11 +67,11 @@ namespace zsat.Controllers
         [Route("[action]")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<List<Attendance>> FilterByTime(DateTime startDate, DateTime endDate)
+        public ActionResult<List<Attendance>> Filter(DateTime startDate, int lessonId, DateTime endDate)
         {
             try
             {
-                List<Attendance> filtered = _manager.FilterByTime(startDate, endDate);
+                List<Attendance> filtered = _manager.Filter(startDate, lessonId, endDate);
                 return Ok(filtered);
             }
             catch (ArgumentException ex)

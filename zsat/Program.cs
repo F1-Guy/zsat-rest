@@ -22,6 +22,7 @@ builder.Services.AddDbContext<ZsatDbContext>(options => options.UseSqlServer(con
 builder.Services.AddScoped<IAttendance, AttendanceManager>();
 builder.Services.AddScoped<IAuthUser, AuthUserManager>();
 builder.Services.AddScoped<IStudent, StudentManager>();
+builder.Services.AddScoped <ILesson, LessonsManager>();
 
 builder.Services.AddCors(options =>
 {

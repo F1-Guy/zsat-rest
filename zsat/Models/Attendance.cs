@@ -8,7 +8,8 @@ namespace zsat.Models
         public int Id { get; set; }
 
         [Required]
-        public DateTime Timestamp { get; set; }
+        public DateTime CheckIn { get; set; }
+        public DateTime? CheckOut { get; set; }
 
         [Required]
         public int LessonId { get; set; }
