@@ -40,12 +40,19 @@ namespace zsat.Managers
 
             Attendance attendance = new Attendance();
 
-            if (lastAttendance == null || lastAttendance.CheckOut != null || lastAttendance.CheckIn.Date != timestamp.Date)
+            if (lastAttendance == null || lastAttendance.CheckIn.Date != timestamp.Date)
                 attendance.CheckIn = timestamp;
 
+            else if (lastAttendance.CheckOut == null && lastAttendance.CheckIn == timestamp.Date)
+            {
+                lastAttendance.CheckOut = timestamp;
+                _context.SaveChanges();
+                return lastAttendance;
+            }
+
             else
-                attendance.CheckOut = timestamp;
-            
+                throw new ArgumentException();
+
             attendance.StudentCardId = cardId;
             attendance.LessonId = lessonId;
 
@@ -54,7 +61,7 @@ namespace zsat.Managers
             return attendance;
         }
 
-        public Attendance DeleteAttendance (int aId)
+        public Attendance DeleteAttendance(int aId)
         {
             Attendance attendance = GetById(aId);
             if (attendance == null) throw new ArgumentException();
@@ -81,7 +88,7 @@ namespace zsat.Managers
                 attendances = attendances.Where(a => a.CheckIn <= endDate).ToList();
             }
 
-            if(lessonId != 0)
+            if (lessonId != 0)
                 attendances = attendances.Where(a => a.LessonId == lessonId).ToList();
 
             return attendances;
