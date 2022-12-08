@@ -43,7 +43,7 @@ namespace zsat.Managers
             if (lastAttendance == null || lastAttendance.CheckIn.Date != timestamp.Date)
                 attendance.CheckIn = timestamp;
 
-            else if (lastAttendance.CheckOut == null && lastAttendance.CheckIn == timestamp.Date)
+            else if (lastAttendance.CheckOut == null && lastAttendance.CheckIn.Date == timestamp.Date)
             {
                 lastAttendance.CheckOut = timestamp;
                 _context.SaveChanges();
