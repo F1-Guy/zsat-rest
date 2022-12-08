@@ -52,13 +52,27 @@ namespace zsat.Managers.Tests
 
         //RegisterAttendance
         [TestMethod]
-        public void RegisterAttendanceTest()
+        public void RegisterCheckInTest()
         {
             string cardId = "1";
             int lessonId = 1;
-            DateTime timestamp = DateTime.Now;
+            DateTime checkIn = DateTime.Now;
 
-            _manager.RegisterAttendance(cardId, timestamp, lessonId);
+            _manager.RegisterAttendance(cardId, checkIn, lessonId);
+
+            attendances = _manager.GetAllAttendances();
+
+            Assert.AreEqual(1, attendances.Count);
+        }
+
+        [TestMethod]
+        public void RegisterCheckOut()
+        {
+            string cardId = "1";
+            int lessonId = 1;
+            DateTime checkOut = DateTime.Now;
+
+            _manager.RegisterAttendance(cardId, checkOut, lessonId);
 
             attendances = _manager.GetAllAttendances();
 
