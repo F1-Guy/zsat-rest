@@ -52,17 +52,48 @@ namespace zsat.Managers.Tests
 
         //RegisterAttendance
         [TestMethod]
-        public void RegisterAttendanceTest()
+        public void RegisterCheckInTest()
         {
             string cardId = "1";
             int lessonId = 1;
-            DateTime timestamp = DateTime.Now;
+            DateTime checkIn = new DateTime (2022,10,10);
 
-            _manager.RegisterAttendance(cardId, timestamp, lessonId);
+            _manager.RegisterAttendance(cardId, checkIn, lessonId);
 
             attendances = _manager.GetAllAttendances();
 
             Assert.AreEqual(1, attendances.Count);
+        }
+
+        [TestMethod]
+        public void CheckInWithNoLastCheckOut()
+        {
+            string cardId = "1";
+            int lessonId = 1;
+            DateTime checkIn1 = DateTime.Now.Date;
+            DateTime checkIn2 = DateTime.Now;
+
+            _manager.RegisterAttendance(cardId, checkIn1, lessonId);
+            _manager.RegisterAttendance(cardId, checkIn2, lessonId);
+
+            attendances = _manager.GetAllAttendances();
+
+            Assert.AreEqual(1, attendances.Count);
+        }
+
+        [TestMethod]
+        public void RegisterCheckOut()
+        {
+            string cardId = "1";
+            int lessonId = 1;
+            DateTime checkIn = DateTime.Now.Date;
+            DateTime checkOut = DateTime.Now;
+            _manager.RegisterAttendance(cardId, checkOut, lessonId);
+
+            _manager.RegisterAttendance(cardId, checkIn, lessonId);
+            Attendance newAttendance = _manager.RegisterAttendance(cardId, checkOut, lessonId);
+
+            Assert.IsNotNull(newAttendance.CheckOut);
         }
 
         [TestMethod]

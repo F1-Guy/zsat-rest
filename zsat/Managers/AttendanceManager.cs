@@ -29,21 +29,39 @@ namespace zsat.Managers
 
         public Attendance RegisterAttendance(string cardId, DateTime timestamp, int lessonId)
         {
-            if ((cardId == null) || (lessonId == 0))
+            if ((cardId == null) || (lessonId == 0) || (timestamp == DateTime.MinValue))
             {
                 throw new ArgumentException();
             }
 
+            List<Attendance> att = _context.Attendances.Where(a => a.StudentCardId == cardId).ToList();
+            att.Sort((x, y) => DateTime.Compare(x.CheckIn, y.CheckIn));
+            Attendance? lastAttendance = att.LastOrDefault();
+
             Attendance attendance = new Attendance();
+
+            if (lastAttendance == null || lastAttendance.CheckIn.Date != timestamp.Date)
+                attendance.CheckIn = timestamp;
+
+            else if (lastAttendance.CheckOut == null && lastAttendance.CheckIn.Date == timestamp.Date)
+            {
+                lastAttendance.CheckOut = timestamp;
+                _context.SaveChanges();
+                return lastAttendance;
+            }
+
+            else
+                throw new ArgumentException();
+
             attendance.StudentCardId = cardId;
-            attendance.Timestamp = timestamp;
             attendance.LessonId = lessonId;
+
             _context.Attendances.Add(attendance);
             _context.SaveChanges();
             return attendance;
         }
 
-        public Attendance DeleteAttendance (int aId)
+        public Attendance DeleteAttendance(int aId)
         {
             Attendance attendance = GetById(aId);
             if (attendance == null) throw new ArgumentException();
@@ -66,11 +84,11 @@ namespace zsat.Managers
 
                 if (startDate > endDate || startDate < minStartDate) throw new ArgumentException();
 
-                attendances = attendances.Where(a => a.Timestamp >= startDate).ToList();
-                attendances = attendances.Where(a => a.Timestamp <= endDate).ToList();
+                attendances = attendances.Where(a => a.CheckIn >= startDate).ToList();
+                attendances = attendances.Where(a => a.CheckIn <= endDate).ToList();
             }
 
-            if(lessonId != 0)
+            if (lessonId != 0)
                 attendances = attendances.Where(a => a.LessonId == lessonId).ToList();
 
             return attendances;
