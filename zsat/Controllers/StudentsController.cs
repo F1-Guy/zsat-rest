@@ -62,5 +62,23 @@ namespace zsat.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet]
+        [Route("[action]")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public ActionResult<List<Attendance>> GetStudentAttendances(string cardId)
+        {
+            if (cardId == null) return BadRequest(nameof(cardId));
+            try
+            {
+                var result = _manager.GetStudentAttendances(cardId);
+                return Ok(result);
+            }
+            catch (ArgumentException ex)
+            {
+                return NoContent();
+            }
+        }
     }
 }

@@ -54,5 +54,13 @@ namespace zsat.Managers
             _context.SaveChanges();
             return student;
         }
+
+        public List<Attendance> GetStudentAttendances(string id)
+        {
+            List<Attendance> attendances = _context.Attendances.Where(s => s.StudentCardId == id).ToList();
+
+            if (attendances.Count <= 0) throw new ArgumentException();
+            return attendances;
+        }
     }
 }
