@@ -88,7 +88,6 @@ namespace zsat.Managers.Tests
             int lessonId = 1;
             DateTime checkIn = DateTime.Now.Date;
             DateTime checkOut = DateTime.Now;
-            _manager.RegisterAttendance(cardId, checkOut, lessonId);
 
             _manager.RegisterAttendance(cardId, checkIn, lessonId);
             Attendance newAttendance = _manager.RegisterAttendance(cardId, checkOut, lessonId);
