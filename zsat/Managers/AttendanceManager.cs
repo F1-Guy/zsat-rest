@@ -96,7 +96,7 @@ namespace zsat.Managers
             att.Sort((x, y) => DateTime.Compare(x.CheckIn, y.CheckIn));
             Attendance? lastAttendance = att.LastOrDefault();
 
-            if (lastAttendance != null) throw new ArgumentException();
+            if (lastAttendance.CheckIn.Date == DateTime.Today) throw new ArgumentException();
 
             DateTime checkIn = DateTime.Today + new TimeSpan(9, 0, 0);
             DateTime checkOut = DateTime.Today + new TimeSpan(15, 0, 0);
