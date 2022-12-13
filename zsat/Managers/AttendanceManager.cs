@@ -61,6 +61,23 @@ namespace zsat.Managers
             return attendance;
         }
 
+        public Attendance AddAttendance(string cardId, int lessonId)
+        {
+            if ((cardId == null) || (lessonId == 0))
+            {
+                throw new ArgumentException();
+            }
+
+            DateTime checkIn = DateTime.Today + new TimeSpan(9, 0, 0);
+            DateTime checkOut = DateTime.Today + new TimeSpan(15, 0, 0);
+
+            Attendance attendance = new Attendance() { CheckIn = checkIn ,CheckOut = checkOut , LessonId = lessonId, StudentCardId = cardId };
+            _context.Attendances.Add(attendance);
+            _context.SaveChanges();
+
+            return attendance;
+        }
+
         public Attendance DeleteAttendance(int aId)
         {
             Attendance attendance = GetById(aId);

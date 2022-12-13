@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using NuGet.Packaging.Signing;
 using zsat.Interfaces;
 using zsat.Managers;
 using zsat.Models;
@@ -46,11 +47,11 @@ namespace zsat.Controllers
            
         }
 
-        // POST api/<AttendancesController>
         [HttpPost]
+        [Route("[action]")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public ActionResult<Attendance> Post(string cardId, DateTime timestamp, int lessonId)
+        public ActionResult<Attendance> Register(string cardId, DateTime timestamp, int lessonId)
         {
             try
             {
@@ -63,6 +64,24 @@ namespace zsat.Controllers
             }
 
         }
+
+        // POST api/<AttendancesController>
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult<Attendance> Post(string cardId, int lessonId)
+        {
+            try
+            {
+                var attendace = _manager.AddAttendance(cardId, lessonId);
+                return Created($"/api/Attendances/{attendace.Id}", attendace);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpGet]
         [Route("[action]")]
         [ProducesResponseType(StatusCodes.Status200OK)]
