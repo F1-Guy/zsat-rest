@@ -6,6 +6,7 @@ namespace zsat.Interfaces
     {
         public List<Attendance> GetAllAttendances();
         public Attendance GetById(int id);
+        public Tuple<List<Student>, List<Student>?> GetTodaysAttendance();
         public Attendance RegisterAttendance(string cardId, DateTime timestamp, int lessonId);
         public Attendance AddAttendance(string cardId, int lessonId);
         public Attendance DeleteAttendance(int aId);

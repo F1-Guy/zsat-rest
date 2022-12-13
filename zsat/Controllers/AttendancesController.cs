@@ -47,6 +47,23 @@ namespace zsat.Controllers
            
         }
 
+        [HttpGet]
+        [Route("[action]")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public ActionResult<Tuple<List<Student>, List<Student>?>> GetTodaysAttendance()
+        {
+            try
+            {
+                return Ok(_manager.GetTodaysAttendance());
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
+
         [HttpPost]
         [Route("[action]")]
         [ProducesResponseType(StatusCodes.Status201Created)]

@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using zsat.Controllers;
 using zsat.Interfaces;
 using zsat.Models;
 
@@ -20,12 +22,34 @@ namespace zsat.Managers
 
         public Attendance GetById(int id)
         {
-            var attendance = _context.Attendances.FirstOrDefault();
+            var attendance = _context.Attendances.Where(a => a.Id == id).FirstOrDefault();
 
             if (attendance == null) throw new ArgumentException();
 
             return attendance;
         }
+
+        public Tuple<List<Student>, List<Student>?> GetTodaysAttendance()
+        {
+            DateTime today = DateTime.Today;
+            List<Attendance> attendances = _context.Attendances.Where(a=> a.CheckIn.Date == today).ToList();
+            List<Student> checkedIn = new List<Student>();
+
+            foreach (var a in attendances)
+            {
+                Student? s = _context.Students.Where(s => s.CardId == a.StudentCardId).FirstOrDefault();
+                if(s!= null)
+                checkedIn.Add(s);
+            }
+
+            List<Student> students = _context.Students.ToList();
+            List<Student> notCheckedIn = students.Except(checkedIn).ToList();
+
+            if (notCheckedIn == null && checkedIn == null) throw new ArgumentException();
+
+
+            return Tuple.Create(checkedIn, notCheckedIn);
+         }
 
         public Attendance RegisterAttendance(string cardId, DateTime timestamp, int lessonId)
         {
@@ -67,6 +91,12 @@ namespace zsat.Managers
             {
                 throw new ArgumentException();
             }
+
+            List<Attendance> att = _context.Attendances.Where(a => a.StudentCardId == cardId).ToList();
+            att.Sort((x, y) => DateTime.Compare(x.CheckIn, y.CheckIn));
+            Attendance? lastAttendance = att.LastOrDefault();
+
+            if (lastAttendance != null) throw new ArgumentException();
 
             DateTime checkIn = DateTime.Today + new TimeSpan(9, 0, 0);
             DateTime checkOut = DateTime.Today + new TimeSpan(15, 0, 0);
