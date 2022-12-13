@@ -5,6 +5,7 @@ using zsat.Models;
 using Azure.Identity;
 using zsat.Interfaces;
 using zsat.Managers;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
@@ -23,6 +24,12 @@ builder.Services.AddScoped<IAttendance, AttendanceManager>();
 builder.Services.AddScoped<IAuthUser, AuthUserManager>();
 builder.Services.AddScoped<IStudent, StudentManager>();
 builder.Services.AddScoped <ILesson, LessonsManager>();
+
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    options.JsonSerializerOptions.WriteIndented = true;
+});
 
 builder.Services.AddCors(options =>
 {
