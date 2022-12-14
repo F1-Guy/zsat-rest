@@ -15,7 +15,7 @@ namespace zsat.Managers
 
         public Student Add(Student student)
         {
-            if (student != null) 
+            if (student.CardId != null && student.Name != null && student.Email != null) 
             {
                 _context.Students.Add(student);
                 _context.SaveChanges();
